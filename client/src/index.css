@@ -62,4 +62,13 @@
     -webkit-text-stroke: 0.5px currentColor;
     color: transparent;
   }
+  
+  @keyframes scrolldown {
+    0% { transform: translateY(-100%); }
+    100% { transform: translateY(100%); }
+  }
+  
+  .animate-scrolldown {
+    animation: scrolldown 2s cubic-bezier(0.77, 0, 0.175, 1) infinite;
+  }
 }

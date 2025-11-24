@@ -1,81 +1,136 @@
-import { useRef } from "react";
+import { useRef, useMemo } from "react";
 import { useFrame } from "@react-three/fiber";
-import { Float, PerspectiveCamera, Stars, Sparkles, TorusKnot, Icosahedron } from "@react-three/drei";
+import { Float, Stars, Trail, Sphere, Line } from "@react-three/drei";
 import * as THREE from "three";
 
-function FloatingShape({ position, color }: { position: [number, number, number], color: string }) {
-  const meshRef = useRef<THREE.Mesh>(null);
-
-  useFrame((state) => {
-    if (!meshRef.current) return;
-    meshRef.current.rotation.x = state.clock.getElapsedTime() * 0.2;
-    meshRef.current.rotation.y = state.clock.getElapsedTime() * 0.3;
-  });
-
+function NetworkNode({ position, color }: { position: [number, number, number], color: string }) {
   return (
-    <Float speed={2} rotationIntensity={0.5} floatIntensity={1}>
-      <mesh ref={meshRef} position={position}>
-        <icosahedronGeometry args={[1, 0]} />
-        <meshStandardMaterial
-          color="black"
-          emissive={color}
-          emissiveIntensity={0.5}
-          wireframe
-          transparent
-          opacity={0.8}
-        />
-      </mesh>
-    </Float>
+    <mesh position={position}>
+      <sphereGeometry args={[0.05, 16, 16]} />
+      <meshBasicMaterial color={color} />
+    </mesh>
   );
 }
 
-function MainObject() {
-  const meshRef = useRef<THREE.Mesh>(null);
+function Connection({ start, end, color }: { start: [number, number, number], end: [number, number, number], color: string }) {
+  return (
+    <Line points={[start, end]} color={color} transparent opacity={0.2} lineWidth={1} />
+  );
+}
+
+function DataSphere() {
+  const groupRef = useRef<THREE.Group>(null);
+  
+  // Generate random nodes on a sphere surface
+  const count = 40;
+  const radius = 2.5;
+  const nodes = useMemo(() => {
+    const temp = [];
+    for (let i = 0; i < count; i++) {
+      const phi = Math.acos(-1 + (2 * i) / count);
+      const theta = Math.sqrt(count * Math.PI) * phi;
+      const x = radius * Math.cos(theta) * Math.sin(phi);
+      const y = radius * Math.sin(theta) * Math.sin(phi);
+      const z = radius * Math.cos(phi);
+      temp.push(new THREE.Vector3(x, y, z));
+    }
+    return temp;
+  }, []);
+
+  // Create connections between close nodes
+  const connections = useMemo(() => {
+    const lines = [];
+    for (let i = 0; i < nodes.length; i++) {
+      for (let j = i + 1; j < nodes.length; j++) {
+        if (nodes[i].distanceTo(nodes[j]) < 1.5) {
+          lines.push({ start: nodes[i], end: nodes[j] });
+        }
+      }
+    }
+    return lines;
+  }, [nodes]);
 
   useFrame((state) => {
-    if (!meshRef.current) return;
-    meshRef.current.rotation.x += 0.002;
-    meshRef.current.rotation.y += 0.005;
+    if (!groupRef.current) return;
+    groupRef.current.rotation.y = state.clock.getElapsedTime() * 0.1;
+    groupRef.current.rotation.z = state.clock.getElapsedTime() * 0.05;
   });
 
   return (
-    <Float speed={1.5} rotationIntensity={0.2} floatIntensity={0.5}>
-      <mesh ref={meshRef} position={[2, 0, 0]} scale={1.8}>
-        <torusKnotGeometry args={[1, 0.3, 128, 16]} />
-        <meshStandardMaterial
-          color="#111"
-          roughness={0.1}
-          metalness={0.8}
-          wireframe={false}
-        />
-        <lineSegments>
-          <wireframeGeometry args={[new THREE.TorusKnotGeometry(1, 0.3, 128, 16)]} />
-          <lineBasicMaterial color="white" opacity={0.1} transparent />
-        </lineSegments>
+    <group ref={groupRef}>
+      {nodes.map((node, i) => (
+        <NetworkNode key={i} position={[node.x, node.y, node.z]} color="#fff" />
+      ))}
+      {connections.map((conn, i) => (
+        <Connection key={i} start={[conn.start.x, conn.start.y, conn.start.z]} end={[conn.end.x, conn.end.y, conn.end.z]} color="#444" />
+      ))}
+      
+      {/* Core Sphere for depth */}
+      <mesh scale={[2.4, 2.4, 2.4]}>
+        <sphereGeometry args={[1, 32, 32]} />
+        <meshBasicMaterial color="#000" transparent opacity={0.9} />
       </mesh>
-    </Float>
+      
+      <mesh scale={[2.45, 2.45, 2.45]}>
+        <sphereGeometry args={[1, 32, 32]} />
+        <meshBasicMaterial color="#111" wireframe transparent opacity={0.1} />
+      </mesh>
+    </group>
   );
+}
+
+function FloatingIcon({ position, iconType }: { position: [number, number, number], iconType: 'code' | 'app' | 'ai' }) {
+    const meshRef = useRef<THREE.Group>(null);
+    
+    useFrame((state) => {
+        if(meshRef.current) {
+            meshRef.current.rotation.y += 0.01;
+            meshRef.current.position.y += Math.sin(state.clock.getElapsedTime() * 2) * 0.002;
+        }
+    });
+
+    return (
+        <group ref={meshRef} position={position}>
+             <Float speed={4} rotationIntensity={1} floatIntensity={2}>
+                {iconType === 'code' && (
+                    <mesh>
+                        <boxGeometry args={[0.5, 0.5, 0.5]} />
+                        <meshNormalMaterial wireframe />
+                    </mesh>
+                )}
+                {iconType === 'app' && (
+                     <mesh>
+                        <capsuleGeometry args={[0.2, 0.6, 4, 8]} />
+                        <meshStandardMaterial color="#333" wireframe />
+                    </mesh>
+                )}
+                 {iconType === 'ai' && (
+                     <mesh>
+                        <icosahedronGeometry args={[0.4, 0]} />
+                        <meshStandardMaterial color="#fff" wireframe />
+                    </mesh>
+                )}
+             </Float>
+        </group>
+    )
 }
 
 export default function HeroScene() {
   return (
     <>
-      <PerspectiveCamera makeDefault position={[0, 0, 10]} />
-      
       <ambientLight intensity={0.5} />
       <pointLight position={[10, 10, 10]} intensity={1} color="#fff" />
-      <spotLight position={[-10, -10, 10]} angle={0.15} penumbra={1} intensity={1} color="#fff" />
+      
+      {/* Central Intelligence Node */}
+      <DataSphere />
 
-      <MainObject />
-
-      <FloatingShape position={[-4, 2, -2]} color="#333" />
-      <FloatingShape position={[-3, -3, 0]} color="#444" />
-      <FloatingShape position={[5, 3, -5]} color="#222" />
+      {/* Floating Tech Symbols */}
+      <FloatingIcon position={[-3, 1, 2]} iconType="code" />
+      <FloatingIcon position={[3, -1, 1]} iconType="ai" />
+      <FloatingIcon position={[-2, -2, 0]} iconType="app" />
 
       <Stars radius={100} depth={50} count={5000} factor={4} saturation={0} fade speed={1} />
-      <Sparkles count={100} scale={10} size={2} speed={0.4} opacity={0.5} color="#fff" />
-      
-      <fog attach="fog" args={['#000', 5, 20]} />
+      <fog attach="fog" args={['#000', 8, 25]} />
     </>
   );
 }
