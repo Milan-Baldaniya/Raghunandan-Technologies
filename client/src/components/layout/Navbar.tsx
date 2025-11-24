@@ -1,5 +1,5 @@
 import { Link } from "wouter";
-import { Menu, X, ArrowRight } from "lucide-react";
+import { Menu, X } from "lucide-react";
 import { useState, useEffect } from "react";
 import { cn } from "@/lib/utils";
 import { motion, AnimatePresence } from "framer-motion";
@@ -17,40 +17,34 @@ export default function Navbar() {
   }, []);
 
   const navLinks = [
-    { name: "Services", href: "#services" },
-    { name: "Expertise", href: "#expertise" },
-    { name: "Work", href: "#work" },
-    { name: "Process", href: "#process" },
+    { name: "Solutions", href: "#services" },
+    { name: "Technologies", href: "#expertise" },
+    { name: "Case Studies", href: "#work" },
+    { name: "Methodology", href: "#process" },
   ];
 
   return (
     <>
-      <motion.nav
-        initial={{ y: -100 }}
-        animate={{ y: 0 }}
-        transition={{ duration: 0.5 }}
+      <nav
         className={cn(
-          "fixed top-0 left-0 w-full z-50 transition-all duration-300 px-6 py-4",
+          "fixed top-0 left-0 w-full z-50 transition-all duration-500 border-b border-white/5 backdrop-blur-md",
+          isScrolled ? "bg-black/90 py-4" : "bg-black/0 py-6"
         )}
       >
-        <div className={cn(
-            "max-w-7xl mx-auto rounded-full border border-white/10 backdrop-blur-xl bg-black/50 px-8 h-16 flex items-center justify-between transition-all duration-300",
-            isScrolled ? "bg-black/80 shadow-[0_0_30px_rgba(255,255,255,0.05)]" : "bg-transparent border-transparent"
-        )}>
+        <div className="container mx-auto px-6 flex items-center justify-between">
           <Link href="/">
-            <a className="text-xl font-bold font-display tracking-tighter flex items-center gap-2">
-              <div className="w-3 h-3 bg-white rounded-full animate-pulse" />
+            <a className="text-2xl font-bold font-display tracking-tighter text-white">
               NEXTECH
             </a>
           </Link>
 
           {/* Desktop Nav */}
-          <div className="hidden md:flex items-center gap-8">
+          <div className="hidden md:flex items-center gap-10">
             {navLinks.map((link) => (
               <a
                 key={link.name}
                 href={link.href}
-                className="text-xs uppercase tracking-widest font-medium text-gray-400 hover:text-white transition-colors"
+                className="text-sm font-medium text-gray-300 hover:text-white transition-colors"
               >
                 {link.name}
               </a>
@@ -58,8 +52,8 @@ export default function Navbar() {
           </div>
           
            <div className="hidden md:flex">
-            <button className="flex items-center gap-2 px-5 py-2 bg-white text-black text-xs font-bold uppercase tracking-wider hover:bg-gray-200 transition-colors rounded-full">
-                Start Project <ArrowRight className="w-3 h-3" />
+            <button className="px-6 py-2.5 bg-white text-black text-sm font-bold hover:bg-gray-200 transition-colors">
+                Start a Project
             </button>
           </div>
 
@@ -71,16 +65,16 @@ export default function Navbar() {
             {mobileMenuOpen ? <X /> : <Menu />}
           </button>
         </div>
-      </motion.nav>
+      </nav>
 
       {/* Full Screen Mobile Nav */}
       <AnimatePresence>
         {mobileMenuOpen && (
           <motion.div 
-            initial={{ opacity: 0, y: "-100%" }}
-            animate={{ opacity: 1, y: 0 }}
-            exit={{ opacity: 0, y: "-100%" }}
-            transition={{ duration: 0.5, ease: [0.22, 1, 0.36, 1] }}
+            initial={{ opacity: 0, x: "100%" }}
+            animate={{ opacity: 1, x: 0 }}
+            exit={{ opacity: 0, x: "100%" }}
+            transition={{ type: "tween", duration: 0.4 }}
             className="fixed inset-0 z-40 bg-black flex flex-col justify-center items-center"
           >
             <div className="flex flex-col gap-8 text-center">
@@ -88,7 +82,7 @@ export default function Navbar() {
                 <a
                   key={link.name}
                   href={link.href}
-                  className="text-4xl font-bold font-display hover:text-gray-400 transition-colors"
+                  className="text-3xl font-bold font-display text-white hover:text-gray-400 transition-colors"
                   onClick={() => setMobileMenuOpen(false)}
                 >
                   {link.name}
@@ -96,10 +90,10 @@ export default function Navbar() {
               ))}
                <a
                   href="#contact"
-                  className="text-4xl font-bold font-display text-transparent text-stroke hover:text-white transition-colors mt-4"
+                  className="text-3xl font-bold font-display text-gray-500 hover:text-white transition-colors mt-4"
                   onClick={() => setMobileMenuOpen(false)}
                 >
-                  GET IN TOUCH
+                  Get In Touch
                 </a>
             </div>
           </motion.div>

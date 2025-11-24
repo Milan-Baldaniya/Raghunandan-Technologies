@@ -1,136 +1,143 @@
-import { useRef, useMemo } from "react";
+import { useRef, useState } from "react";
 import { useFrame } from "@react-three/fiber";
-import { Float, Stars, Trail, Sphere, Line } from "@react-three/drei";
+import { Float, Environment, ContactShadows, PresentationControls, Html } from "@react-three/drei";
 import * as THREE from "three";
 
-function NetworkNode({ position, color }: { position: [number, number, number], color: string }) {
-  return (
-    <mesh position={position}>
-      <sphereGeometry args={[0.05, 16, 16]} />
-      <meshBasicMaterial color={color} />
-    </mesh>
-  );
-}
+function Laptop() {
+  const group = useRef<THREE.Group>(null);
 
-function Connection({ start, end, color }: { start: [number, number, number], end: [number, number, number], color: string }) {
-  return (
-    <Line points={[start, end]} color={color} transparent opacity={0.2} lineWidth={1} />
-  );
-}
-
-function DataSphere() {
-  const groupRef = useRef<THREE.Group>(null);
+  // Open/Close animation could go here but let's keep it static open for now
   
-  // Generate random nodes on a sphere surface
-  const count = 40;
-  const radius = 2.5;
-  const nodes = useMemo(() => {
-    const temp = [];
-    for (let i = 0; i < count; i++) {
-      const phi = Math.acos(-1 + (2 * i) / count);
-      const theta = Math.sqrt(count * Math.PI) * phi;
-      const x = radius * Math.cos(theta) * Math.sin(phi);
-      const y = radius * Math.sin(theta) * Math.sin(phi);
-      const z = radius * Math.cos(phi);
-      temp.push(new THREE.Vector3(x, y, z));
-    }
-    return temp;
-  }, []);
-
-  // Create connections between close nodes
-  const connections = useMemo(() => {
-    const lines = [];
-    for (let i = 0; i < nodes.length; i++) {
-      for (let j = i + 1; j < nodes.length; j++) {
-        if (nodes[i].distanceTo(nodes[j]) < 1.5) {
-          lines.push({ start: nodes[i], end: nodes[j] });
-        }
-      }
-    }
-    return lines;
-  }, [nodes]);
-
-  useFrame((state) => {
-    if (!groupRef.current) return;
-    groupRef.current.rotation.y = state.clock.getElapsedTime() * 0.1;
-    groupRef.current.rotation.z = state.clock.getElapsedTime() * 0.05;
-  });
-
   return (
-    <group ref={groupRef}>
-      {nodes.map((node, i) => (
-        <NetworkNode key={i} position={[node.x, node.y, node.z]} color="#fff" />
-      ))}
-      {connections.map((conn, i) => (
-        <Connection key={i} start={[conn.start.x, conn.start.y, conn.start.z]} end={[conn.end.x, conn.end.y, conn.end.z]} color="#444" />
-      ))}
-      
-      {/* Core Sphere for depth */}
-      <mesh scale={[2.4, 2.4, 2.4]}>
-        <sphereGeometry args={[1, 32, 32]} />
-        <meshBasicMaterial color="#000" transparent opacity={0.9} />
+    <group ref={group} position={[0, -1, 0]}>
+      {/* Base */}
+      <mesh position={[0, 0, 0]}>
+        <boxGeometry args={[3.2, 0.15, 2.2]} />
+        <meshStandardMaterial color="#1a1a1a" metalness={0.7} roughness={0.2} />
+      </mesh>
+
+      {/* Screen Hinge Group */}
+      <group position={[0, 0.05, -1.1]} rotation={[0.25, 0, 0]}>
+        {/* Lid */}
+        <mesh position={[0, 1.1, 0]}>
+          <boxGeometry args={[3.2, 2.2, 0.1]} />
+          <meshStandardMaterial color="#1a1a1a" metalness={0.7} roughness={0.2} />
+        </mesh>
+        
+        {/* Screen (Emissive) */}
+        <mesh position={[0, 1.1, 0.06]}>
+          <planeGeometry args={[3, 2]} />
+          <meshStandardMaterial emissive="#000" color="#000" roughness={0.2} metalness={0.8} />
+        </mesh>
+        
+        {/* HTML Content on Screen */}
+        <Html
+            transform
+            wrapperClass="htmlScreen"
+            distanceFactor={1.5}
+            position={[0, 1.1, 0.07]}
+            rotation={[0, 0, 0]}
+        >
+            <div className="w-[600px] h-[400px] bg-black p-8 flex flex-col items-center justify-center overflow-hidden border border-white/10">
+                <div className="flex gap-2 mb-4">
+                    <div className="w-3 h-3 rounded-full bg-red-500" />
+                    <div className="w-3 h-3 rounded-full bg-yellow-500" />
+                    <div className="w-3 h-3 rounded-full bg-green-500" />
+                </div>
+                <div className="w-full font-mono text-xs text-green-400 leading-relaxed opacity-80">
+                    {`> initializing_core_systems...\n> connecting_to_neural_net...\n> loading_modules [██████████] 100%\n> system_ready`}
+                </div>
+                 <div className="mt-8 text-4xl font-bold text-white font-display tracking-tighter">
+                    NEXTECH OS
+                </div>
+                 <div className="mt-2 text-sm text-gray-500 font-mono">
+                    v2.0.45-beta
+                </div>
+            </div>
+        </Html>
+      </group>
+
+      {/* Keyboard Area (Texture or Geometry) */}
+      <mesh position={[0, 0.08, 0.2]} rotation={[-Math.PI / 2, 0, 0]}>
+        <planeGeometry args={[2.8, 1.2]} />
+        <meshStandardMaterial color="#050505" roughness={0.8} />
       </mesh>
       
-      <mesh scale={[2.45, 2.45, 2.45]}>
-        <sphereGeometry args={[1, 32, 32]} />
-        <meshBasicMaterial color="#111" wireframe transparent opacity={0.1} />
+      {/* Trackpad */}
+      <mesh position={[0, 0.08, 0.8]} rotation={[-Math.PI / 2, 0, 0]}>
+        <planeGeometry args={[1, 0.6]} />
+        <meshStandardMaterial color="#111" roughness={0.5} />
       </mesh>
     </group>
   );
 }
 
-function FloatingIcon({ position, iconType }: { position: [number, number, number], iconType: 'code' | 'app' | 'ai' }) {
-    const meshRef = useRef<THREE.Group>(null);
-    
-    useFrame((state) => {
-        if(meshRef.current) {
-            meshRef.current.rotation.y += 0.01;
-            meshRef.current.position.y += Math.sin(state.clock.getElapsedTime() * 2) * 0.002;
-        }
-    });
-
+function MobilePhone() {
     return (
-        <group ref={meshRef} position={position}>
-             <Float speed={4} rotationIntensity={1} floatIntensity={2}>
-                {iconType === 'code' && (
-                    <mesh>
-                        <boxGeometry args={[0.5, 0.5, 0.5]} />
-                        <meshNormalMaterial wireframe />
-                    </mesh>
-                )}
-                {iconType === 'app' && (
-                     <mesh>
-                        <capsuleGeometry args={[0.2, 0.6, 4, 8]} />
-                        <meshStandardMaterial color="#333" wireframe />
-                    </mesh>
-                )}
-                 {iconType === 'ai' && (
-                     <mesh>
-                        <icosahedronGeometry args={[0.4, 0]} />
-                        <meshStandardMaterial color="#fff" wireframe />
-                    </mesh>
-                )}
+        <group position={[2.5, -0.8, 0.5]} rotation={[-0.1, -0.2, 0.1]}>
+             <Float speed={2} rotationIntensity={0.5} floatIntensity={0.5}>
+                {/* Body */}
+                <mesh>
+                    <boxGeometry args={[0.8, 1.6, 0.08]} />
+                    <meshStandardMaterial color="#0a0a0a" metalness={0.9} roughness={0.1} />
+                </mesh>
+                {/* Screen */}
+                <mesh position={[0, 0, 0.05]}>
+                    <planeGeometry args={[0.75, 1.55]} />
+                     <meshStandardMaterial emissive="#111" color="#000" />
+                </mesh>
+                {/* Camera notch mockup */}
+                <mesh position={[0, 0.7, 0.06]}>
+                     <circleGeometry args={[0.03]} />
+                     <meshBasicMaterial color="#000" />
+                </mesh>
              </Float>
         </group>
     )
 }
 
+function Tablet() {
+     return (
+        <group position={[-2.5, -0.5, -0.5]} rotation={[0.1, 0.3, -0.1]}>
+             <Float speed={1.5} rotationIntensity={0.4} floatIntensity={0.5}>
+                {/* Body */}
+                <mesh>
+                    <boxGeometry args={[1.8, 1.2, 0.06]} />
+                    <meshStandardMaterial color="#151515" metalness={0.8} roughness={0.2} />
+                </mesh>
+                {/* Screen */}
+                <mesh position={[0, 0, 0.04]}>
+                    <planeGeometry args={[1.7, 1.1]} />
+                    <meshStandardMaterial emissive="#050505" color="#000" />
+                </mesh>
+             </Float>
+        </group>
+    )
+}
+
+
 export default function HeroScene() {
   return (
     <>
-      <ambientLight intensity={0.5} />
-      <pointLight position={[10, 10, 10]} intensity={1} color="#fff" />
+      <Environment preset="city" />
       
-      {/* Central Intelligence Node */}
-      <DataSphere />
+      <PresentationControls 
+        global 
+        snap={true}
+        rotation={[0, 0, 0]} 
+        polar={[-Math.PI / 6, Math.PI / 6]} 
+        azimuth={[-Math.PI / 6, Math.PI / 6]}
+      >
+        <group position={[0, 0.5, 0]} scale={0.8}>
+            <Float rotationIntensity={0.2} floatIntensity={0.4} floatingRange={[-0.1, 0.1]}>
+                <Laptop />
+            </Float>
+            <MobilePhone />
+            <Tablet />
+        </group>
+      </PresentationControls>
 
-      {/* Floating Tech Symbols */}
-      <FloatingIcon position={[-3, 1, 2]} iconType="code" />
-      <FloatingIcon position={[3, -1, 1]} iconType="ai" />
-      <FloatingIcon position={[-2, -2, 0]} iconType="app" />
-
-      <Stars radius={100} depth={50} count={5000} factor={4} saturation={0} fade speed={1} />
-      <fog attach="fog" args={['#000', 8, 25]} />
+      <ContactShadows position={[0, -2, 0]} opacity={0.4} scale={10} blur={2.5} far={4} />
     </>
   );
 }
