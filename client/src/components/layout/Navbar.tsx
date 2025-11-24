@@ -11,101 +11,79 @@ export default function Navbar() {
 
   useEffect(() => {
     const handleScroll = () => setScrolled(window.scrollY > 50);
-    window.addEventListener("scroll", handleScroll);
+    window.addEventListener("scroll", handleScroll, { passive: true });
     return () => window.removeEventListener("scroll", handleScroll);
   }, []);
 
   const menuItems = [
-    { name: "Expertise", href: "#expertise", icon: Cpu },
-    { name: "Projects", href: "#projects", icon: Code2 },
-    { name: "Company", href: "#about", icon: Layers },
-    { name: "Connect", href: "#contact", icon: Terminal },
+    { name: "Works", href: "#projects" },
+    { name: "About", href: "#about" },
+    { name: "Contact", href: "#contact" },
   ];
 
   return (
     <>
-      {/* Floating Island Navbar (Desktop) */}
       <motion.nav
-        initial={{ y: -100, opacity: 0 }}
-        animate={{ y: 0, opacity: 1 }}
-        transition={{ delay: 0.5, duration: 0.8, type: "spring" }}
-        className="fixed top-6 inset-x-0 z-50 hidden md:flex justify-center pointer-events-none"
+        className={cn(
+          "fixed top-0 left-0 w-full z-50 transition-all duration-300",
+          scrolled ? "bg-black/80 backdrop-blur-md border-b border-white/10" : "bg-transparent"
+        )}
       >
-        <div className={cn(
-            "pointer-events-auto flex items-center gap-2 p-2 rounded-full border transition-all duration-500 backdrop-blur-xl",
-            scrolled 
-                ? "bg-black/80 border-white/10 shadow-[0_0_40px_-10px_rgba(0,240,255,0.1)]" 
-                : "bg-transparent border-transparent"
-        )}>
-            {/* Logo Pill */}
+        <div className="container mx-auto px-6 h-20 flex items-center justify-between">
             <Link href="/">
-                <a className="flex items-center gap-2 px-6 py-3 bg-white text-black rounded-full font-bold tracking-tighter hover:bg-cyan-400 transition-colors">
-                    <div className="w-2 h-2 bg-black rounded-full animate-pulse" />
+                <a className="text-2xl font-bold font-display tracking-tighter flex items-center gap-2">
                     NXT
                 </a>
             </Link>
 
-            {/* Links Pill */}
-            <div className="flex items-center bg-white/5 rounded-full px-2 border border-white/5">
+            <div className="hidden md:flex items-center gap-8">
                 {menuItems.map((item) => (
                     <a
                         key={item.name}
                         href={item.href}
-                        className="relative px-6 py-3 text-sm font-medium text-gray-400 hover:text-white transition-colors group"
+                        className="text-sm font-medium text-gray-400 hover:text-white transition-colors uppercase tracking-widest"
                     >
-                        <span className="relative z-10">{item.name}</span>
-                        {location === item.href && (
-                            <motion.div 
-                                layoutId="nav-pill"
-                                className="absolute inset-0 bg-white/10 rounded-full -z-0"
-                            />
-                        )}
-                        <div className="absolute bottom-2 left-1/2 w-1 h-1 bg-cyan-400 rounded-full opacity-0 group-hover:opacity-100 transition-opacity transform -translate-x-1/2" />
+                        {item.name}
                     </a>
                 ))}
+                <button className="px-6 py-2 bg-white text-black text-sm font-bold uppercase tracking-widest hover:bg-gray-200 transition-colors">
+                    Start Project
+                </button>
             </div>
 
-            {/* CTA Pill */}
-            <button className="px-6 py-3 rounded-full bg-white/5 border border-white/10 text-white font-medium text-sm hover:bg-cyan-400 hover:text-black hover:border-cyan-400 transition-all flex items-center gap-2 group">
-                Start <ArrowRight className="w-3 h-3 group-hover:translate-x-1 transition-transform" />
+            <button 
+                className="md:hidden text-white"
+                onClick={() => setIsOpen(true)}
+            >
+                <Menu />
             </button>
         </div>
       </motion.nav>
 
-      {/* Mobile Menu Button */}
-      <div className="fixed top-6 right-6 z-50 md:hidden">
-        <button
-            onClick={() => setIsOpen(!isOpen)}
-            className="w-12 h-12 rounded-full bg-black/80 border border-white/10 backdrop-blur-md flex items-center justify-center text-white"
-        >
-            {isOpen ? <X /> : <Menu />}
-        </button>
-      </div>
-
-      {/* Mobile Fullscreen Menu */}
       <AnimatePresence>
         {isOpen && (
             <motion.div
-                initial={{ opacity: 0, clipPath: "circle(0% at 100% 0%)" }}
-                animate={{ opacity: 1, clipPath: "circle(150% at 100% 0%)" }}
-                exit={{ opacity: 0, clipPath: "circle(0% at 100% 0%)" }}
-                transition={{ duration: 0.5, ease: "circInOut" }}
-                className="fixed inset-0 bg-zinc-950 z-40 flex flex-col justify-center px-8"
+                initial={{ x: "100%" }}
+                animate={{ x: 0 }}
+                exit={{ x: "100%" }}
+                transition={{ type: "tween", duration: 0.4 }}
+                className="fixed inset-0 bg-black z-[60] flex flex-col p-8"
             >
-                <div className="flex flex-col gap-6">
-                    {menuItems.map((item, i) => (
-                        <motion.a
+                <div className="flex justify-end mb-12">
+                    <button onClick={() => setIsOpen(false)} className="text-white">
+                        <X size={32} />
+                    </button>
+                </div>
+                <div className="flex flex-col gap-8">
+                    {menuItems.map((item) => (
+                        <a
                             key={item.name}
                             href={item.href}
-                            initial={{ x: 50, opacity: 0 }}
-                            animate={{ x: 0, opacity: 1 }}
-                            transition={{ delay: i * 0.1 }}
                             onClick={() => setIsOpen(false)}
-                            className="flex items-center gap-6 text-4xl font-bold font-display text-white/50 hover:text-white transition-colors group"
+                            className="text-4xl font-bold font-display uppercase tracking-tight hover:text-gray-400 transition-colors"
                         >
-                            <item.icon className="w-8 h-8 text-cyan-500 opacity-0 group-hover:opacity-100 transition-opacity" />
-                            <span className="group-hover:translate-x-4 transition-transform duration-300">{item.name}</span>
-                        </motion.a>
+                            {item.name}
+                        </a>
                     ))}
                 </div>
             </motion.div>
