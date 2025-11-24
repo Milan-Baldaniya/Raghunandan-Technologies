@@ -10,7 +10,7 @@ export default function Navbar() {
   const [scrolled, setScrolled] = useState(false);
 
   useEffect(() => {
-    const handleScroll = () => setScrolled(window.scrollY > 50);
+    const handleScroll = () => setScrolled(window.scrollY > 20);
     window.addEventListener("scroll", handleScroll);
     return () => window.removeEventListener("scroll", handleScroll);
   }, []);
@@ -24,49 +24,55 @@ export default function Navbar() {
 
   return (
     <>
-      {/* Floating Island Navbar (Desktop) */}
+      {/* 3D Floating Navbar (Desktop) */}
       <motion.nav
-        initial={{ y: -100, opacity: 0 }}
-        animate={{ y: 0, opacity: 1 }}
+        initial={{ y: -100, opacity: 0, rotateX: 20 }}
+        animate={{ y: 0, opacity: 1, rotateX: 0 }}
         transition={{ delay: 0.5, duration: 0.8, type: "spring" }}
-        className="fixed top-6 inset-x-0 z-50 hidden md:flex justify-center pointer-events-none"
+        className="fixed top-8 inset-x-0 z-50 hidden md:flex justify-center pointer-events-none perspective-1000"
       >
-        <div className={cn(
-            "pointer-events-auto flex items-center gap-2 p-2 rounded-full border transition-all duration-500 backdrop-blur-xl",
-            scrolled 
-                ? "bg-black/80 border-white/10 shadow-[0_0_40px_-10px_rgba(0,240,255,0.1)]" 
-                : "bg-transparent border-transparent"
-        )}>
+        <div 
+            className={cn(
+                "pointer-events-auto flex items-center gap-2 p-2 rounded-full border transition-all duration-500 backdrop-blur-xl transform-gpu hover:scale-105",
+                scrolled 
+                    ? "bg-black/60 border-white/10 shadow-[0_10px_40px_-10px_rgba(0,0,0,0.5)] translate-y-0" 
+                    : "bg-black/40 border-white/5 translate-y-2"
+            )}
+            style={{
+                transformStyle: 'preserve-3d',
+            }}
+        >
             {/* Logo Pill */}
             <Link href="/">
-                <a className="flex items-center gap-2 px-6 py-3 bg-white text-black rounded-full font-bold tracking-tighter hover:bg-cyan-400 transition-colors">
+                <a className="flex items-center gap-2 px-6 py-3 bg-gradient-to-b from-white to-gray-200 text-black rounded-full font-bold tracking-tighter hover:to-cyan-300 transition-all shadow-lg">
                     <div className="w-2 h-2 bg-black rounded-full animate-pulse" />
                     NXT
                 </a>
             </Link>
 
             {/* Links Pill */}
-            <div className="flex items-center bg-white/5 rounded-full px-2 border border-white/5">
+            <div className="flex items-center bg-black/40 rounded-full px-2 border border-white/5 shadow-inner">
                 {menuItems.map((item) => (
                     <a
                         key={item.name}
                         href={item.href}
-                        className="relative px-6 py-3 text-sm font-medium text-gray-400 hover:text-white transition-colors group"
+                        className="relative px-5 py-3 text-sm font-medium text-gray-400 hover:text-white transition-colors group"
                     >
-                        <span className="relative z-10">{item.name}</span>
+                        <span className="relative z-10 mix-blend-difference">{item.name}</span>
                         {location === item.href && (
                             <motion.div 
                                 layoutId="nav-pill"
-                                className="absolute inset-0 bg-white/10 rounded-full -z-0"
+                                className="absolute inset-0 bg-white rounded-full -z-0 shadow-[0_0_20px_rgba(255,255,255,0.3)]"
+                                transition={{ type: "spring", bounce: 0.2, duration: 0.6 }}
                             />
                         )}
-                        <div className="absolute bottom-2 left-1/2 w-1 h-1 bg-cyan-400 rounded-full opacity-0 group-hover:opacity-100 transition-opacity transform -translate-x-1/2" />
+                        <div className="absolute bottom-2 left-1/2 w-1 h-1 bg-cyan-400 rounded-full opacity-0 group-hover:opacity-100 transition-opacity transform -translate-x-1/2 shadow-[0_0_10px_#22d3ee]" />
                     </a>
                 ))}
             </div>
 
             {/* CTA Pill */}
-            <button className="px-6 py-3 rounded-full bg-white/5 border border-white/10 text-white font-medium text-sm hover:bg-cyan-400 hover:text-black hover:border-cyan-400 transition-all flex items-center gap-2 group">
+            <button className="px-6 py-3 rounded-full bg-gradient-to-r from-cyan-500/10 to-blue-500/10 border border-cyan-500/20 text-cyan-400 font-medium text-sm hover:bg-cyan-400 hover:text-black hover:border-cyan-400 transition-all flex items-center gap-2 group shadow-[0_0_20px_-5px_rgba(34,211,238,0.1)] hover:shadow-[0_0_30px_rgba(34,211,238,0.4)]">
                 Start <ArrowRight className="w-3 h-3 group-hover:translate-x-1 transition-transform" />
             </button>
         </div>
