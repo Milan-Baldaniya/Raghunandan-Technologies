@@ -1,134 +1,127 @@
-import { useRef, useState, useEffect } from "react";
-import { useFrame, useThree } from "@react-three/fiber";
-import { Float, Environment, PerspectiveCamera, Html, useTexture } from "@react-three/drei";
+import { useEffect, useRef } from "react";
+import { useFrame } from "@react-three/fiber";
+import { Float, Environment, PerspectiveCamera, useCubeTexture, MeshTransmissionMaterial } from "@react-three/drei";
 import * as THREE from "three";
 
-function RobotHead({ mouse }: { mouse: React.MutableRefObject<THREE.Vector2> }) {
-  const headRef = useRef<THREE.Group>(null);
-  const eyesRef = useRef<THREE.Group>(null);
+function CyberEye({ mouse }: { mouse: React.MutableRefObject<THREE.Vector2> }) {
+  const eyeGroup = useRef<THREE.Group>(null);
+  const pupilRef = useRef<THREE.Mesh>(null);
 
   useFrame((state) => {
-    if (!headRef.current || !eyesRef.current) return;
+    if (!eyeGroup.current || !pupilRef.current) return;
 
-    // Smoothly interpolate mouse position
-    const targetX = (state.mouse.x * Math.PI) / 4; // Limit rotation range
-    const targetY = (state.mouse.y * Math.PI) / 4;
+    // Smooth tracking
+    const targetX = (state.mouse.x * Math.PI) / 6;
+    const targetY = (state.mouse.y * Math.PI) / 6;
 
-    headRef.current.rotation.y = THREE.MathUtils.lerp(headRef.current.rotation.y, targetX, 0.1);
-    headRef.current.rotation.x = THREE.MathUtils.lerp(headRef.current.rotation.x, -targetY, 0.1);
+    eyeGroup.current.rotation.y = THREE.MathUtils.lerp(eyeGroup.current.rotation.y, targetX, 0.1);
+    eyeGroup.current.rotation.x = THREE.MathUtils.lerp(eyeGroup.current.rotation.x, -targetY, 0.1);
+    
+    // Pupil dilation breathing
+    pupilRef.current.scale.setScalar(1 + Math.sin(state.clock.getElapsedTime() * 2) * 0.1);
   });
 
   return (
-    <group ref={headRef}>
-      {/* Main Head Shape */}
-      <mesh position={[0, 0, 0]}>
-        <boxGeometry args={[1.2, 1.4, 1.2]} />
-        <meshStandardMaterial color="#e0e0e0" metalness={0.8} roughness={0.2} />
+    <group ref={eyeGroup}>
+      {/* Outer Shell - Glassy/Metallic */}
+      <mesh>
+        <sphereGeometry args={[1.5, 64, 64]} />
+        <meshPhysicalMaterial 
+            color="#111" 
+            metalness={0.9} 
+            roughness={0.1} 
+            clearcoat={1} 
+            clearcoatRoughness={0.1}
+        />
       </mesh>
 
-      {/* Face Plate (Black Glass) */}
-      <mesh position={[0, 0, 0.61]}>
-        <planeGeometry args={[1, 1.2]} />
-        <meshStandardMaterial color="#000" metalness={1} roughness={0} />
+      {/* Iris Ring (Glowing) */}
+      <mesh position={[0, 0, 1.35]}>
+        <ringGeometry args={[0.4, 0.8, 64]} />
+        <meshBasicMaterial color="#00f0ff" toneMapped={false} side={THREE.DoubleSide} />
+      </mesh>
+      
+      {/* Iris Detail (Wireframe) */}
+       <mesh position={[0, 0, 1.36]} rotation={[0, 0, Math.PI/4]}>
+        <ringGeometry args={[0.45, 0.75, 16]} />
+        <meshBasicMaterial color="#fff" wireframe opacity={0.3} transparent />
       </mesh>
 
-      {/* Glowing Eyes */}
-      <group ref={eyesRef} position={[0, 0.2, 0.62]}>
-        {/* Left Eye */}
-        <mesh position={[-0.25, 0, 0]}>
-          <circleGeometry args={[0.15, 32]} />
-          <meshBasicMaterial color="#00f0ff" toneMapped={false} />
-        </mesh>
-         <pointLight position={[-0.25, 0, 0.5]} color="#00f0ff" intensity={2} distance={2} />
-
-        {/* Right Eye */}
-        <mesh position={[0.25, 0, 0]}>
-          <circleGeometry args={[0.15, 32]} />
-          <meshBasicMaterial color="#00f0ff" toneMapped={false} />
-        </mesh>
-        <pointLight position={[0.25, 0, 0.5]} color="#00f0ff" intensity={2} distance={2} />
+      {/* Pupil (Black Void) */}
+      <mesh ref={pupilRef} position={[0, 0, 1.4]}>
+        <circleGeometry args={[0.35, 64]} />
+        <meshBasicMaterial color="#000" />
+      </mesh>
+      
+      {/* Mechanical Housing / Socket */}
+      <group position={[0, 0, -0.5]}>
+          <mesh rotation={[Math.PI/2, 0, 0]}>
+            <cylinderGeometry args={[1.6, 1.6, 1, 32, 4, true]} />
+            <meshStandardMaterial color="#222" metalness={0.8} roughness={0.2} side={THREE.DoubleSide} />
+          </mesh>
+          
+          {/* Wires/Details */}
+          {Array.from({ length: 8 }).map((_, i) => (
+              <mesh key={i} rotation={[0, 0, (i / 8) * Math.PI * 2]} position={[1.7 * Math.cos((i/8)*Math.PI*2), 1.7 * Math.sin((i/8)*Math.PI*2), 0]}>
+                  <boxGeometry args={[0.2, 0.5, 2]} />
+                  <meshStandardMaterial color="#333" metalness={0.6} />
+              </mesh>
+          ))}
       </group>
-
-      {/* Ear/Antenna Details */}
-      <mesh position={[0.7, 0, 0]}>
-        <boxGeometry args={[0.2, 0.8, 0.8]} />
-        <meshStandardMaterial color="#333" metalness={0.5} roughness={0.5} />
-      </mesh>
-      <mesh position={[-0.7, 0, 0]}>
-        <boxGeometry args={[0.2, 0.8, 0.8]} />
-        <meshStandardMaterial color="#333" metalness={0.5} roughness={0.5} />
-      </mesh>
-
-      {/* Top Detail */}
-       <mesh position={[0, 0.75, 0]}>
-        <cylinderGeometry args={[0.4, 0.5, 0.1, 32]} />
-        <meshStandardMaterial color="#333" metalness={0.5} roughness={0.5} />
-      </mesh>
     </group>
   );
 }
 
-function RobotBody() {
-    return (
-        <group position={[0, -2.2, 0]}>
-             {/* Neck */}
-            <mesh position={[0, 1.2, 0]}>
-                <cylinderGeometry args={[0.3, 0.4, 0.8]} />
-                <meshStandardMaterial color="#222" metalness={0.8} roughness={0.4} />
-            </mesh>
-
-            {/* Torso */}
-            <mesh position={[0, -0.2, 0]}>
-                <cylinderGeometry args={[0.8, 0.6, 2.5, 6]} />
-                <meshStandardMaterial color="#e0e0e0" metalness={0.8} roughness={0.2} />
-            </mesh>
-
-            {/* Chest Light */}
-             <mesh position={[0, 0.5, 0.75]} rotation={[0, 0, Math.PI / 4]}>
-                <boxGeometry args={[0.4, 0.4, 0.1]} />
-                <meshBasicMaterial color="#00f0ff" toneMapped={false} />
-            </mesh>
-             <pointLight position={[0, 0.5, 1]} color="#00f0ff" intensity={2} distance={3} />
+function Particles() {
+    const count = 200;
+    const mesh = useRef<THREE.InstancedMesh>(null);
+    
+    useFrame((state) => {
+        if(!mesh.current) return;
+        const time = state.clock.getElapsedTime();
+        const dummy = new THREE.Object3D();
+        
+        for(let i=0; i<count; i++) {
+            const t = (i/count) * Math.PI * 2;
+            const x = Math.cos(t + time * 0.1) * 4 + Math.sin(time * 0.5 + i) * 0.5;
+            const y = Math.sin(t + time * 0.1) * 4 + Math.cos(time * 0.3 + i) * 0.5;
+            const z = Math.sin(time * 0.2 + i * 0.1) * 2 - 2;
             
-            {/* Shoulders */}
-             <mesh position={[1.1, 0.8, 0]} rotation={[0, 0, -0.2]}>
-                <sphereGeometry args={[0.6]} />
-                <meshStandardMaterial color="#333" metalness={0.6} roughness={0.4} />
-            </mesh>
-             <mesh position={[-1.1, 0.8, 0]} rotation={[0, 0, 0.2]}>
-                <sphereGeometry args={[0.6]} />
-                <meshStandardMaterial color="#333" metalness={0.6} roughness={0.4} />
-            </mesh>
-        </group>
-    )
-}
-
-function Robot() {
-    const mouse = useRef(new THREE.Vector2());
+            dummy.position.set(x, y, z);
+            dummy.scale.setScalar(0.02 + Math.sin(time + i) * 0.01);
+            dummy.updateMatrix();
+            mesh.current.setMatrixAt(i, dummy.matrix);
+        }
+        mesh.current.instanceMatrix.needsUpdate = true;
+    });
 
     return (
-        <group position={[0, 0, 0]}>
-            <Float speed={2} rotationIntensity={0.1} floatIntensity={0.2}>
-                <RobotHead mouse={mouse} />
-                <RobotBody />
-            </Float>
-        </group>
+        <instancedMesh ref={mesh} args={[undefined, undefined, count]}>
+            <dodecahedronGeometry args={[0.2, 0]} />
+            <meshBasicMaterial color="#00f0ff" transparent opacity={0.4} />
+        </instancedMesh>
     )
 }
 
 export default function HeroScene() {
+  const mouse = useRef(new THREE.Vector2());
+
   return (
     <>
       <PerspectiveCamera makeDefault position={[0, 0, 6]} />
-      <Environment preset="warehouse" />
+      <Environment preset="city" />
       
-      <ambientLight intensity={0.5} />
-      <spotLight position={[10, 10, 10]} angle={0.15} penumbra={1} intensity={1000} castShadow />
-      <pointLight position={[-10, -10, -10]} intensity={500} color="#00f0ff" />
+      <ambientLight intensity={0.2} />
+      <pointLight position={[10, 10, 10]} intensity={2} color="#fff" />
+      <pointLight position={[-5, -5, 5]} intensity={5} color="#00f0ff" distance={10} />
 
-      <group position={[1.5, 0, 0]} rotation={[0, -0.3, 0]}>
-         <Robot />
+      <group position={[2, 0, 0]}>
+         <Float speed={2} rotationIntensity={0.2} floatIntensity={0.2}>
+            <CyberEye mouse={mouse} />
+         </Float>
       </group>
+      
+      <Particles />
     </>
   );
 }
