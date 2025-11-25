@@ -1,6 +1,11 @@
 import fs from "node:fs";
 import { type Server } from "node:http";
 import path from "node:path";
+import { fileURLToPath } from "url";
+import { dirname } from "path";
+
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = dirname(__filename);
 
 import type { Express } from "express";
 import { nanoid } from "nanoid";
@@ -26,7 +31,7 @@ export async function setupVite(app: Express, server: Server) {
       ...viteLogger,
       error: (msg, options) => {
         viteLogger.error(msg, options);
-        process.exit(1);
+        // process.exit(1); // Don't exit on error
       },
     },
     server: serverOptions,
@@ -39,7 +44,7 @@ export async function setupVite(app: Express, server: Server) {
 
     try {
       const clientTemplate = path.resolve(
-        import.meta.dirname,
+        __dirname,
         "..",
         "client",
         "index.html",
@@ -61,5 +66,11 @@ export async function setupVite(app: Express, server: Server) {
 }
 
 (async () => {
-  await runApp(setupVite);
+  try {
+    await runApp(setupVite);
+  } catch (error) {
+    console.error("Failed to start server:");
+    console.error(error);
+    process.exit(1);
+  }
 })();
