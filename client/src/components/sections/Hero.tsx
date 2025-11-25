@@ -26,7 +26,7 @@ export default function Hero() {
                     initial={{ opacity: 0, x: -50 }}
                     animate={{ opacity: 1, x: 0 }}
                     transition={{ duration: 0.8, ease: "easeOut" }}
-                    className="flex-1 py-20 md:py-0"
+                    className="flex-1 py-4 md:py-0"
                 >
                     <div className="flex items-center gap-3 mb-6">
                         <div className="w-2 h-2 bg-cyan-400 rounded-full animate-pulse shadow-[0_0_10px_#22d3ee]" />
@@ -54,7 +54,7 @@ export default function Hero() {
                     initial={{ opacity: 0, x: 50 }}
                     animate={{ opacity: 1, x: 0 }}
                     transition={{ duration: 0.8, ease: "easeOut", delay: 0.2 }}
-                    className="flex-1 relative h-[400px] md:h-[600px] w-full"
+                    className="flex-1 relative h-[600px] md:h-[600px] w-full"
                 >
                     <div className="absolute inset-0">
                         <SplineScene
