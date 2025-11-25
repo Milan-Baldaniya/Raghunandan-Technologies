@@ -54,9 +54,9 @@ export default function Hero() {
                     initial={{ opacity: 0, x: 50 }}
                     animate={{ opacity: 1, x: 0 }}
                     transition={{ duration: 0.8, ease: "easeOut", delay: 0.2 }}
-                    className="flex-1 relative h-[600px] md:h-[600px] w-full"
+                    className="flex-1 relative h-[700px] md:h-[600px] w-full"
                 >
-                    <div className="absolute inset-0">
+                    <div className="absolute inset-0 scale-[2] -translate-y-20 md:scale-100 md:translate-y-0">
                         <SplineScene
                             scene="https://prod.spline.design/kZDDjO5HuC9GJUM2/scene.splinecode"
                             className="w-full h-full"
