@@ -6,9 +6,9 @@ const technologies = [
 
 export default function TechStack() {
   return (
-    <div className="py-10 bg-black border-y border-white/10 overflow-hidden">
+    <div className="py-10 bg-black border-b border-white/10 overflow-hidden">
       <div className="flex relative">
-        <motion.div 
+        <motion.div
           className="flex gap-12 whitespace-nowrap items-center"
           animate={{ x: ["0%", "-50%"] }}
           transition={{ repeat: Infinity, duration: 20, ease: "linear" }}

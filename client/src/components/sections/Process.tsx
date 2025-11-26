@@ -3,23 +3,28 @@ import { motion } from "framer-motion";
 const steps = [
   {
     id: "01",
-    title: "Discovery & Strategy",
-    description: "We deep dive into your business goals, analyzing market trends and user needs to define a robust digital roadmap."
+    title: "Discovery & Data Strategy",
+    description: "We analyze your goals across web, mobile, or AI. From structuring training data to defining project roadmaps, we lay a precise foundation for your digital success."
   },
   {
     id: "02",
-    title: "Design & Prototyping",
-    description: "Visualizing the solution through high-fidelity wireframes and interactive prototypes that prioritize user experience."
+    title: "Secure Architecture",
+    description: "Designing for scale and security. We architect robust cloud infrastructure (AWS/Azure) and intuitive UI/UX, embedding cyber security protocols from day one."
   },
   {
     id: "03",
-    title: "Development & AI",
-    description: "Writing clean, scalable code and integrating intelligent algorithms to power your application's core logic."
+    title: "Web & App Development",
+    description: "Building digital experiences. Our experts craft high-performance, responsive web applications and native mobile apps that deliver exceptional user engagement."
   },
   {
     id: "04",
-    title: "Deployment & Scale",
-    description: "Launching your product with CI/CD pipelines and cloud infrastructure designed for massive growth."
+    title: "AI & ML Integration",
+    description: "Adding intelligence. We integrate predictive models, computer vision, and advanced algorithms to transform your application into a smart, data-driven solution."
+  },
+  {
+    id: "05",
+    title: "Cloud Deployment & Scale",
+    description: "Global reach. We deploy your solutions using advanced cloud technologies, ensuring they are optimized, secure, and ready to scale with your business."
   }
 ];
 
@@ -27,24 +32,24 @@ export default function Process() {
   return (
     <section id="process" className="py-32 bg-zinc-950 text-white">
       <div className="container mx-auto px-6">
-        <div className="grid md:grid-cols-2 gap-16">
-          <div className="sticky top-32 h-fit">
-            <motion.h2 
+        <div className="grid md:grid-cols-2 gap-8 md:gap-16">
+          <div className="md:sticky md:top-32 h-fit mb-8 md:mb-0">
+            <motion.h2
               initial={{ opacity: 0 }}
               whileInView={{ opacity: 1 }}
-              className="text-5xl md:text-7xl font-bold font-display mb-8 leading-[0.9]"
+              className="text-4xl md:text-7xl font-bold font-display mb-6 md:mb-8 leading-[0.9]"
             >
               HOW WE <br />
               <span className="text-stroke text-transparent">EXECUTE</span>
             </motion.h2>
-            <p className="text-gray-400 text-lg max-w-md">
-              Our methodology is a blend of agile development and design thinking, ensuring rapid delivery without compromising quality.
+            <p className="text-gray-400 text-base md:text-lg max-w-md">
+              From initial concept to global scale, we integrate web, mobile, AI, and cloud technologies to deliver secure, high-impact digital solutions.
             </p>
           </div>
 
           <div className="space-y-12">
             {steps.map((step, index) => (
-              <motion.div 
+              <motion.div
                 key={index}
                 initial={{ opacity: 0, x: 50 }}
                 whileInView={{ opacity: 1, x: 0 }}

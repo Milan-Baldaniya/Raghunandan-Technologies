@@ -6,7 +6,7 @@ import { Spotlight } from "@/components/ui/spotlight";
 
 export default function Hero() {
     return (
-        <section className="relative min-h-screen w-full overflow-hidden bg-black">
+        <section id="expertise" className="relative min-h-screen w-full overflow-hidden bg-black">
             {/* Spotlight Effect */}
             <Spotlight
                 className="-top-40 left-0 md:left-60 md:-top-20"
@@ -35,16 +35,45 @@ export default function Hero() {
                         </span>
                     </div>
 
-                    <h1 className="text-5xl md:text-7xl lg:text-8xl font-bold font-display tracking-tight mb-8 leading-[0.9] text-white">
-                        WE FORGE <br />
-                        THE <span className="text-transparent text-stroke hover:text-white transition-colors duration-500 cursor-default">FUTURE</span>
+                    <h1 className="text-5xl md:text-7xl lg:text-8xl font-bold font-display tracking-tight mb-4 leading-[0.9] text-white">
+                        WE WORK ON <br />
+                        <span className="text-transparent text-stroke hover:text-white transition-colors duration-500 cursor-default">INNOVATION</span>
                     </h1>
 
-                    <p className="text-lg text-gray-300 max-w-xl mb-10 leading-relaxed border-l-2 border-white/20 pl-6">
-                        Pioneering the intersection of artificial intelligence and human ingenuity.
-                        We build autonomous systems that scale with your ambition and create immersive
-                        experiences that feel alive.
-                    </p>
+                    <div className="text-lg text-gray-300 max-w-xl mb-10 leading-relaxed border-l-2 border-white/20 pl-6 overflow-hidden h-[180px] relative">
+                        <motion.div
+                            animate={{
+                                y: [0, -100, -200, -300, -400, -500, -600, 0]
+                            }}
+                            transition={{
+                                duration: 110,
+                                repeat: Infinity,
+                                ease: "linear"
+                            }}
+                        >
+                            <p className="mb-8">
+                                Pioneering <span className="text-cyan-400 font-semibold">AI Data-Labeling</span> and <span className="text-cyan-400 font-semibold">AI Training-Data Services</span> to power the next generation of intelligent systems.
+                            </p>
+                            <p className="mb-8">
+                                Crafting cutting-edge <span className="text-cyan-400 font-semibold">Web Development</span> solutions that deliver exceptional user experiences and drive business growth.
+                            </p>
+                            <p className="mb-8">
+                                Building intelligent applications with <span className="text-cyan-400 font-semibold">AI & Machine Learning</span> technologies that transform data into actionable insights.
+                            </p>
+                            <p className="mb-8">
+                                Deploying scalable <span className="text-cyan-400 font-semibold">Cloud Infrastructure</span> solutions on AWS, Azure, and GCP for seamless operations.
+                            </p>
+                            <p className="mb-8">
+                                Creating innovative <span className="text-cyan-400 font-semibold">Mobile & App Development</span> solutions for iOS, Android, and cross-platform experiences.
+                            </p>
+                            <p className="mb-8">
+                                Securing your digital assets with comprehensive <span className="text-cyan-400 font-semibold">Cyber Security</span> solutions and threat protection.
+                            </p>
+                            <p className="mb-8">
+                                Delivering end-to-end technology solutions that empower businesses to thrive in the digital age.
+                            </p>
+                        </motion.div>
+                    </div>
 
 
                 </motion.div>

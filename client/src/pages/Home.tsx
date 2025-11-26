@@ -3,13 +3,13 @@ import { Suspense, lazy } from "react";
 import Navbar from "@/components/layout/Navbar";
 import Hero from "@/components/sections/Hero";
 import { ContainerScroll } from "@/components/ui/container-scroll-animation";
+import AboutIntro from "@/components/sections/AboutIntro";
 import TechStack from "@/components/sections/TechStack";
 import Footer from "@/components/layout/Footer";
 
 // Lazy load below-the-fold sections for better initial load performance
 const Services = lazy(() => import("@/components/sections/Services"));
 const Projects = lazy(() => import("@/components/sections/Projects"));
-const About = lazy(() => import("@/components/sections/About"));
 const Process = lazy(() => import("@/components/sections/Process"));
 const Contact = lazy(() => import("@/components/sections/Contact"));
 
@@ -30,9 +30,9 @@ export default function Home() {
             <ContainerScroll
               titleComponent={
                 <>
-                  <h1 className="text-4xl font-semibold text-white dark:text-white">
+                  <h1 className="text-2xl md:text-4xl font-semibold text-white dark:text-white">
                     Welcome to <br />
-                    <span className="text-4xl md:text-[6rem] font-bold mt-1 leading-none text-cyan-400">
+                    <span className="text-3xl md:text-[6rem] font-bold mt-1 leading-none text-cyan-400">
                       Raghunandan Technologies
                     </span>
                   </h1>
@@ -42,6 +42,9 @@ export default function Home() {
               <Hero />
             </ContainerScroll>
           </div>
+          {/* Separator line */}
+          <div className="w-full h-px bg-gradient-to-r from-transparent via-white/10 to-transparent"></div>
+          <AboutIntro />
           <TechStack />
           <Suspense fallback={<SectionLoader />}>
             <Services />
@@ -51,9 +54,6 @@ export default function Home() {
           </Suspense>
           <Suspense fallback={<SectionLoader />}>
             <Process />
-          </Suspense>
-          <Suspense fallback={<SectionLoader />}>
-            <About />
           </Suspense>
           <Suspense fallback={<SectionLoader />}>
             <Contact />
