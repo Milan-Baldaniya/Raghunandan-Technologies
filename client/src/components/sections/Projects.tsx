@@ -4,32 +4,20 @@ import { ChevronLeft, ChevronRight } from "lucide-react";
 
 const projects = [
   {
-    title: "NEURAL_FINANCE",
-    category: "AI / FINTECH",
+    title: "STYLENX",
+    category: "E-COMMERCE",
     year: "2024",
-    image: "https://images.unsplash.com/photo-1639322537228-f710d846310a?q=80&w=2832&auto=format&fit=crop",
-    description: "Predictive algorithmic trading platform processing 4TB of market data daily."
+    image: "https://images.unsplash.com/photo-1441986300917-64674bd600d8?q=80&w=2940&auto=format&fit=crop",
+    description: "Modern e-commerce platform delivering seamless shopping experiences with cutting-edge technology.",
+    url: "https://stylenx.com"
   },
   {
-    title: "CYBER_HEALTH",
-    category: "IOT / MEDICAL",
-    year: "2023",
-    image: "https://images.unsplash.com/photo-1576091160399-112ba8d25d1d?q=80&w=2940&auto=format&fit=crop",
-    description: "Real-time biometric monitoring system for critical care units."
-  },
-  {
-    title: "AERO_SYSTEMS",
-    category: "ENTERPRISE / CLOUD",
-    year: "2023",
-    image: "https://images.unsplash.com/photo-1559067515-bf7d799b6d4d?q=80&w=2826&auto=format&fit=crop",
-    description: "Distributed cloud architecture for autonomous drone logistics."
-  },
-  {
-    title: "QUANTUM_SECURE",
-    category: "CYBERSECURITY",
+    title: "KRUSHIWORLD",
+    category: "IMPORT / EXPORT",
     year: "2024",
-    image: "https://images.unsplash.com/photo-1558494949-ef2a0cc7c35d?q=80&w=2668&auto=format&fit=crop",
-    description: "Next-gen encryption protocol for sensitive financial data."
+    image: "https://images.unsplash.com/photo-1586528116311-ad8dd3c8310d?q=80&w=2940&auto=format&fit=crop",
+    description: "Global trade platform connecting agricultural producers and buyers worldwide.",
+    url: "https://krushiworld.com"
   }
 ];
 
@@ -155,11 +143,25 @@ export default function Projects() {
               <p className="text-xl text-gray-300 mb-6 leading-relaxed">
                 {projects[currentIndex].description}
               </p>
+
+              {/* Visit Site Button */}
+              <a
+                href={projects[currentIndex].url}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="inline-flex items-center gap-2 px-6 py-3 bg-cyan-500 hover:bg-cyan-400 text-black font-semibold rounded-full transition-all duration-300 transform hover:scale-105"
+              >
+                Visit Site
+                <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M14 5l7 7m0 0l-7 7m7-7H3" />
+                </svg>
+              </a>
             </motion.div>
 
             {/* Navigation Controls */}
             <div className="flex items-center gap-4 pt-8 border-t border-white/10">
               <button
+                type="button"
                 onClick={handlePrev}
                 className="p-4 rounded-full border border-white/10 hover:bg-white/10 hover:border-cyan-400/50 transition-all duration-300 group"
               >
@@ -169,6 +171,7 @@ export default function Projects() {
               <div className="flex gap-2 flex-1 justify-center">
                 {projects.map((_, i) => (
                   <button
+                    type="button"
                     key={i}
                     onClick={() => setCurrentIndex(i)}
                     className={`h-2 rounded-full transition-all duration-300 ${i === currentIndex
@@ -180,6 +183,7 @@ export default function Projects() {
               </div>
 
               <button
+                type="button"
                 onClick={handleNext}
                 className="p-4 rounded-full border border-white/10 hover:bg-white/10 hover:border-cyan-400/50 transition-all duration-300 group"
               >
@@ -195,6 +199,6 @@ export default function Projects() {
           </div>
         </div>
       </div>
-    </section>
+    </section >
   );
 }

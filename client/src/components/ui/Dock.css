@@ -7,7 +7,7 @@
 
 .dock-panel {
     position: fixed;
-    bottom: 1rem;
+    bottom: -10rem;
     left: 50%;
     transform: translateX(-50%);
     display: flex;
@@ -17,7 +17,7 @@
     border-radius: 1.5rem;
     background-color: rgba(6, 0, 16, 0.8);
     backdrop-filter: blur(10px);
-    border: 1px solid rgba(255, 255, 255, 0.1);
+    border: 2px solid rgba(255, 255, 255, 0.6);
     padding: 0 1rem 1rem;
     z-index: 50;
 }
@@ -25,17 +25,19 @@
 .dock-item {
     position: relative;
     display: inline-flex;
+    flex-direction: column;
     align-items: center;
     justify-content: center;
     border-radius: 12px;
     background-color: rgba(6, 0, 16, 0.5);
-    border: 1px solid rgba(255, 255, 255, 0.1);
+    border: 2px solid rgba(255, 255, 255, 0.6);
     box-shadow:
         0 4px 6px -1px rgba(0, 0, 0, 0.1),
         0 2px 4px -1px rgba(0, 0, 0, 0.06);
     cursor: pointer;
     outline: none;
     color: white;
+    padding: 4px;
 }
 
 .dock-icon {
@@ -43,23 +45,23 @@
     align-items: center;
     justify-content: center;
     width: 100%;
-    height: 100%;
+    height: 60%;
+    margin-bottom: 2px;
 }
 
 .dock-label {
-    position: absolute;
-    top: -3rem;
-    left: 50%;
-    width: max-content;
-    white-space: pre;
-    border-radius: 0.5rem;
-    border: 1px solid rgba(255, 255, 255, 0.1);
-    background-color: rgba(6, 0, 16, 0.9);
-    padding: 0.35rem 0.75rem;
-    font-size: 0.85rem;
-    font-weight: 500;
-    color: #fff;
+    position: static;
+    transform: none;
+    width: auto;
+    white-space: nowrap;
+    border: none;
+    background-color: transparent;
+    padding: 0;
+    font-size: 0.65rem;
+    font-weight: 600;
+    color: rgba(255, 255, 255, 0.9);
     pointer-events: none;
-    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.2);
-    transform: translateX(-50%);
+    box-shadow: none;
+    text-align: center;
+    line-height: 1.2;
 }

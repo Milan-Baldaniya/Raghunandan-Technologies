@@ -70,12 +70,11 @@ function DockLabel({ children, className = '', ...rest }: any) {
             {isVisible && (
                 <motion.div
                     initial={{ opacity: 0, y: 0 }}
-                    animate={{ opacity: 1, y: -10 }}
+                    animate={{ opacity: 1, y: 0 }}
                     exit={{ opacity: 0, y: 0 }}
                     transition={{ duration: 0.2 }}
                     className={`dock-label ${className} ${alwaysShowLabels ? 'static-label' : ''}`}
                     role="tooltip"
-                    style={{ x: '-50%' }}
                 >
                     {children}
                 </motion.div>

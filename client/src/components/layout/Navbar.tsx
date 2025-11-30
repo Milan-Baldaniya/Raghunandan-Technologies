@@ -55,9 +55,9 @@ export default function Navbar() {
                 <div className="pointer-events-auto">
                     <Dock
                         items={dockItems}
-                        panelHeight={80}
-                        baseItemSize={60}
-                        magnification={80}
+                        panelHeight={100}
+                        baseItemSize={70}
+                        magnification={90}
                         alwaysShowLabels={true}
                     />
                 </div>
