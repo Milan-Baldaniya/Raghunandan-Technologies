@@ -63,13 +63,7 @@ export default function Navbar() {
                 </div>
             </div>
 
-            {/* Mobile Logo (Top Left) */}
-            <div className="md:hidden fixed top-4 left-4 z-50">
-                <Link href="/" className="flex items-center gap-3 bg-black/50 backdrop-blur-md p-2 rounded-full border border-white/10">
-                    <img src="/RT_LOGO.png" alt="Raghunandan Technologies" className="h-8 w-auto" />
-                    <span className="text-white font-bold text-sm tracking-wide pr-2">Raghunandan Technologies</span>
-                </Link>
-            </div>
+
         </>
     );
 }

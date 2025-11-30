@@ -23,12 +23,12 @@
 
 @media (max-width: 768px) {
   .card-swap-container {
-    transform: scale(0.75) translate(-65%, 25%);
+    transform: scale(0.65) translate(-75%, -5%);
   }
 }
 
 @media (max-width: 480px) {
   .card-swap-container {
-    transform: scale(0.55) translate(-90%, 25%);
+    transform: scale(0.5) translate(-100%, -10%);
   }
 }

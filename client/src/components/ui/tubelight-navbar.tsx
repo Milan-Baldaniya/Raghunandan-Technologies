@@ -38,7 +38,7 @@ export function NavBar({ items, className, logo }: NavBarProps) {
                 className,
             )}
         >
-            <div className="flex items-center gap-3 bg-background/5 border border-border backdrop-blur-lg py-2 px-6 rounded-full shadow-lg">
+            <div className="flex items-center gap-3 bg-background/5 border-2 border-white/60 backdrop-blur-lg py-2 px-6 rounded-full shadow-lg">
                 {logo && (
                     <div className="pl-2 pr-1">
                         {logo}

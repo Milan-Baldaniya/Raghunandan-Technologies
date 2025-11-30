@@ -1,5 +1,5 @@
 import { ReactLenis } from "lenis/react";
-import { Suspense, lazy } from "react";
+import { Suspense, lazy, useEffect } from "react";
 import Navbar from "@/components/layout/Navbar";
 import Hero from "@/components/sections/Hero";
 import { ContainerScroll } from "@/components/ui/container-scroll-animation";
@@ -21,6 +21,14 @@ const SectionLoader = () => (
 );
 
 export default function Home() {
+  useEffect(() => {
+    // Force scroll to top on page load
+    if ('scrollRestoration' in history) {
+      history.scrollRestoration = 'manual';
+    }
+    window.scrollTo(0, 0);
+  }, []);
+
   return (
     <ReactLenis root>
       <div className="min-h-screen bg-black text-white selection:bg-cyan-400 selection:text-black">

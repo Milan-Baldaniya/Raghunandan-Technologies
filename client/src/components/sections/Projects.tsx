@@ -1,7 +1,6 @@
-import { motion } from "framer-motion";
+import { motion, AnimatePresence } from "framer-motion";
 import { useState } from "react";
 import { ChevronLeft, ChevronRight } from "lucide-react";
-import CardSwap, { Card } from "@/components/ui/CardSwap";
 
 const projects = [
   {
@@ -9,38 +8,33 @@ const projects = [
     category: "AI / FINTECH",
     year: "2024",
     image: "https://images.unsplash.com/photo-1639322537228-f710d846310a?q=80&w=2832&auto=format&fit=crop",
-    description: "Predictive algorithmic trading platform processing 4TB of market data daily.",
-    details: "Built with cutting-edge machine learning algorithms, this platform analyzes market trends in real-time, providing traders with actionable insights and automated trading strategies."
+    description: "Predictive algorithmic trading platform processing 4TB of market data daily."
   },
   {
     title: "CYBER_HEALTH",
     category: "IOT / MEDICAL",
     year: "2023",
     image: "https://images.unsplash.com/photo-1576091160399-112ba8d25d1d?q=80&w=2940&auto=format&fit=crop",
-    description: "Real-time biometric monitoring system for critical care units.",
-    details: "Advanced IoT sensors combined with AI-powered analytics deliver instant health insights, enabling medical professionals to make faster, more informed decisions in critical situations."
+    description: "Real-time biometric monitoring system for critical care units."
   },
   {
     title: "AERO_SYSTEMS",
     category: "ENTERPRISE / CLOUD",
     year: "2023",
     image: "https://images.unsplash.com/photo-1559067515-bf7d799b6d4d?q=80&w=2826&auto=format&fit=crop",
-    description: "Distributed cloud architecture for autonomous drone logistics.",
-    details: "Scalable cloud infrastructure managing thousands of autonomous drones, optimizing delivery routes, and ensuring seamless coordination across multiple distribution centers."
+    description: "Distributed cloud architecture for autonomous drone logistics."
   },
   {
     title: "QUANTUM_SECURE",
     category: "CYBERSECURITY",
     year: "2024",
     image: "https://images.unsplash.com/photo-1558494949-ef2a0cc7c35d?q=80&w=2668&auto=format&fit=crop",
-    description: "Next-gen encryption protocol for sensitive financial data.",
-    details: "Quantum-resistant encryption technology protecting sensitive financial transactions, ensuring data security in the era of quantum computing threats."
+    description: "Next-gen encryption protocol for sensitive financial data."
   }
 ];
 
 export default function Projects() {
   const [currentIndex, setCurrentIndex] = useState(0);
-  const currentProject = projects[currentIndex];
 
   const handleNext = () => {
     setCurrentIndex((prev) => (prev + 1) % projects.length);
@@ -50,9 +44,16 @@ export default function Projects() {
     setCurrentIndex((prev) => (prev - 1 + projects.length) % projects.length);
   };
 
+  // Calculate the visible cards (current + next 2)
+  const visibleProjects = [
+    projects[currentIndex],
+    projects[(currentIndex + 1) % projects.length],
+    projects[(currentIndex + 2) % projects.length],
+  ];
+
   return (
-    <section id="projects" className="py-32 bg-black text-white relative overflow-hidden">
-      <div className="container mx-auto px-6 mb-16 relative z-10">
+    <section id="projects" className="py-8 lg:py-32 bg-black text-white relative overflow-hidden">
+      <div className="container mx-auto px-6 mb-4 lg:mb-16 relative z-10">
         <div className="flex flex-col md:flex-row md:items-end md:justify-between border-b border-white/10 pb-8">
           <div>
             <span className="text-cyan-400 font-mono text-sm tracking-widest block mb-2">SELECTED WORKS</span>
@@ -65,75 +66,96 @@ export default function Projects() {
 
       {/* Main Content Grid */}
       <div className="container mx-auto px-6">
-        <div className="grid lg:grid-cols-2 gap-12 items-center">
-          {/* Left Side - CardSwap */}
-          <div className="relative flex justify-center" style={{ height: '600px', minHeight: '600px' }}>
-            <CardSwap
-              width={500}
-              height={400}
-              cardDistance={60}
-              verticalDistance={70}
-              delay={5000}
-              pauseOnHover={true}
-              easing="elastic"
-            >
-              {projects.map((project, index) => (
-                <Card key={index}>
-                  <div className="relative w-full h-full group overflow-hidden">
-                    <img
-                      src={project.image.replace('q=80', 'q=65')}
-                      alt={project.title}
-                      loading="lazy"
-                      decoding="async"
-                      className="absolute inset-0 w-full h-full object-cover transition-transform duration-700 group-hover:scale-110 opacity-60 group-hover:opacity-40"
-                      style={{ willChange: 'transform' }}
-                    />
-                    <div className="absolute inset-0 bg-gradient-to-t from-black via-black/50 to-transparent" />
+        <div className="grid lg:grid-cols-2 gap-8 lg:gap-12 items-center">
+          {/* Left Side - Custom Card Stack */}
+          <div className="relative flex justify-center h-[300px] lg:h-[500px] items-center">
+            <div className="relative w-full max-w-[500px] aspect-[5/4]">
+              <AnimatePresence mode="popLayout">
+                {visibleProjects.map((project, index) => {
+                  // Index 0 is the front card, 1 is middle, 2 is back
+                  const isFront = index === 0;
+                  return (
+                    <motion.div
+                      key={`${project.title}-${index}`}
+                      initial={{
+                        scale: 0.9 - index * 0.05,
+                        y: index * 20,
+                        zIndex: 3 - index,
+                        opacity: 1 - index * 0.2,
+                        skewY: 6 // Initial skew
+                      }}
+                      animate={{
+                        scale: 1 - index * 0.05,
+                        y: index * -20, // Stack upwards slightly
+                        zIndex: 3 - index,
+                        opacity: index === 0 ? 1 : 0.6 - index * 0.1,
+                        skewY: 6 // Maintain skew
+                      }}
+                      exit={{
+                        y: -100,
+                        opacity: 0,
+                        scale: 1.1,
+                        zIndex: 4,
+                        skewY: 6
+                      }}
+                      transition={{ duration: 0.5, ease: "easeInOut" }}
+                      className="absolute inset-0 rounded-xl overflow-hidden border border-white/10 bg-zinc-900 shadow-2xl"
+                      style={{
+                        transformOrigin: "center center"
+                      }}
+                    >
+                      <img
+                        src={project.image}
+                        alt={project.title}
+                        className="w-full h-full object-cover opacity-60"
+                      />
+                      <div className="absolute inset-0 bg-gradient-to-t from-black via-black/20 to-transparent" />
 
-                    <div className="absolute bottom-0 left-0 w-full p-6 md:p-8">
-                      <div className="flex items-center gap-4 mb-3">
-                        <span className="text-xs font-mono text-cyan-400">{project.category}</span>
-                        <span className="text-xs font-mono text-gray-500">{project.year}</span>
-                      </div>
-                      <h3 className="text-2xl md:text-3xl font-bold font-display mb-3 text-white group-hover:text-cyan-400 transition-colors">
-                        {project.title}
-                      </h3>
-                    </div>
-                  </div>
-                </Card>
-              ))}
-            </CardSwap>
+                      {isFront && (
+                        <motion.div
+                          initial={{ opacity: 0, y: 20 }}
+                          animate={{ opacity: 1, y: 0 }}
+                          className="absolute bottom-0 left-0 w-full p-6"
+                        >
+                          <div className="flex items-center gap-3 mb-2">
+                            <span className="text-xs font-mono text-cyan-400">{project.category}</span>
+                            <span className="text-xs font-mono text-gray-500">{project.year}</span>
+                          </div>
+                          <h3 className="text-2xl font-bold font-display text-white">
+                            {project.title}
+                          </h3>
+                        </motion.div>
+                      )}
+                    </motion.div>
+                  );
+                })}
+              </AnimatePresence>
+            </div>
           </div>
 
           {/* Right Side - Project Details */}
-          <motion.div
-            key={currentIndex}
-            initial={{ opacity: 0, x: 50 }}
-            animate={{ opacity: 1, x: 0 }}
-            transition={{ duration: 0.5 }}
-            className="space-y-8"
-          >
-            {/* Project Info */}
-            <div>
+          <div className="space-y-8">
+            <motion.div
+              key={currentIndex}
+              initial={{ opacity: 0, x: 20 }}
+              animate={{ opacity: 1, x: 0 }}
+              transition={{ duration: 0.4 }}
+            >
               <div className="flex items-center gap-4 mb-4">
                 <span className="px-4 py-2 bg-cyan-500/10 border border-cyan-500/30 rounded-full text-cyan-400 text-sm font-mono uppercase tracking-wider">
-                  {currentProject.category}
+                  {projects[currentIndex].category}
                 </span>
-                <span className="text-gray-500 font-mono text-sm">{currentProject.year}</span>
+                <span className="text-gray-500 font-mono text-sm">{projects[currentIndex].year}</span>
               </div>
 
               <h3 className="text-4xl md:text-5xl font-bold font-display mb-6 text-white">
-                {currentProject.title}
+                {projects[currentIndex].title}
               </h3>
 
               <p className="text-xl text-gray-300 mb-6 leading-relaxed">
-                {currentProject.description}
+                {projects[currentIndex].description}
               </p>
-
-              <p className="text-base text-gray-400 leading-relaxed">
-                {currentProject.details}
-              </p>
-            </div>
+            </motion.div>
 
             {/* Navigation Controls */}
             <div className="flex items-center gap-4 pt-8 border-t border-white/10">
@@ -170,7 +192,7 @@ export default function Projects() {
               <span>PROJECT {String(currentIndex + 1).padStart(2, '0')}</span>
               <span>OF {String(projects.length).padStart(2, '0')}</span>
             </div>
-          </motion.div>
+          </div>
         </div>
       </div>
     </section>
