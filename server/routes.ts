@@ -1,6 +1,7 @@
 import type { Express } from "express";
 import { createServer, type Server } from "http";
 import { storage } from "./storage";
+import { sendContactEmail, sendAutoReplyEmail } from "./email";
 
 export async function registerRoutes(app: Express): Promise<Server> {
   // Contact form endpoint
@@ -22,16 +23,10 @@ export async function registerRoutes(app: Express): Promise<Server> {
       console.log('Timestamp:', new Date().toLocaleString());
       console.log('===================================\n');
 
-      // TODO: Set up email service
-      // For now, form submissions are logged to the console
-      // To enable email sending, you can:
-      // 1. Use a service like SendGrid, Mailgun, or AWS SES
-      // 2. Set up Gmail with App Password (requires 2-Step Verification)
-      // 3. Use a contact form service like Formspree or EmailJS
-
-      // Send the form data to raghunandantechnologies@gmail.com
-      // You can manually check the server console for submissions
-      // or set up one of the email services mentioned above
+      // Send email
+      await sendContactEmail(req.body);
+      await sendAutoReplyEmail(req.body);
+      console.log('Email sent successfully');
 
       res.json({
         success: true,

@@ -84,9 +84,9 @@ export default function Contact() {
     if (!formData.budget) {
       newErrors.budget = "Please select a budget range";
     }
-    if (!formData.message || formData.message.length < 10) {
-      newErrors.message = "Message must be at least 10 characters";
-    }
+    // if (!formData.message || formData.message.length < 10) {
+    //   newErrors.message = "Message must be at least 10 characters";
+    // }
 
     setErrors(newErrors);
     return Object.keys(newErrors).length === 0;
@@ -208,7 +208,7 @@ export default function Contact() {
               </div>
               <div className="space-y-2">
                 <label htmlFor="companyUrl" className="block text-white font-semibold text-sm">
-                  Company URL
+                  Company URL <span className="text-gray-500 font-normal">(Optional)</span>
                 </label>
                 <input
                   id="companyUrl"
@@ -316,7 +316,7 @@ export default function Contact() {
             {/* Additional Message */}
             <div className="space-y-2">
               <label htmlFor="message" className="block text-white font-semibold text-sm">
-                Additional Message *
+                Additional Message <span className="text-gray-500 font-normal">(Optional)</span>
               </label>
               <textarea
                 id="message"
