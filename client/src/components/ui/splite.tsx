@@ -38,7 +38,7 @@ export function SplineScene({ scene, className, eager = false }: SplineSceneProp
         >
           <Spline
             scene={scene}
-            className="w-full h-full"
+            className="w-full h-full pointer-events-none"
           />
         </Suspense>
       ) : (

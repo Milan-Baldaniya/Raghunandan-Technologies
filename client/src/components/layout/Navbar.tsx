@@ -1,5 +1,5 @@
 import { NavBar } from "@/components/ui/tubelight-navbar";
-import Dock from "@/components/ui/Dock";
+import { MagicNavigation } from "@/components/ui/MagicNavigation";
 import { Cpu, Code2, Layers, Terminal } from "lucide-react";
 import { Link, useLocation } from "wouter";
 
@@ -50,17 +50,9 @@ export default function Navbar() {
                 />
             </div>
 
-            {/* Mobile Dock */}
-            <div className="md:hidden fixed bottom-4 left-0 right-0 z-50 flex justify-center pointer-events-none">
-                <div className="pointer-events-auto">
-                    <Dock
-                        items={dockItems}
-                        panelHeight={100}
-                        baseItemSize={70}
-                        magnification={90}
-                        alwaysShowLabels={true}
-                    />
-                </div>
+            {/* Mobile Navigation */}
+            <div className="md:hidden fixed bottom-0 left-0 right-0 z-50 flex justify-center pb-2">
+                <MagicNavigation items={menuItems} />
             </div>
 
 

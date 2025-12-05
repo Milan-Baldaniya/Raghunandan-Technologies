@@ -1,0 +1,31 @@
+
+> rest-express@1.0.0 dev
+> cross-env NODE_ENV=development tsx server/index-dev.ts
+
+Starting server/index-dev.ts...
+Loading dotenv...
+[dotenv@17.2.3] injecting env (3) from .env -- tip: ⚙️  write to custom object with { processEnv: myObject }
+Dotenv loaded.
+Configuring email transporter...
+EMAIL_PASSWORD exists: true
+EMAIL_PASSWORD length: 16
+node:events:496
+      throw er; // Unhandled 'error' event
+      ^
+
+Error: listen ENOTSUP: operation not supported on socket 127.0.0.1:5001
+    at Server.setupListenHandle [as _listen2] (node:net:1915:21)
+    at listenInCluster (node:net:1994:12)
+    at node:net:2203:7
+    at process.processTicksAndRejections (node:internal/process/task_queues:90:21)
+Emitted 'error' event on Server instance at:
+    at emitErrorNT (node:net:1973:8)
+    at process.processTicksAndRejections (node:internal/process/task_queues:90:21) {
+  code: 'ENOTSUP',
+  errno: -4049,
+  syscall: 'listen',
+  address: '127.0.0.1',
+  port: 5001
+}
+
+Node.js v22.14.0

@@ -1,0 +1,170 @@
+.magic-navigation {
+  position: relative;
+  width: 100%;
+  max-width: 400px;
+  height: 70px;
+  background: hsl(0 0% 10%);
+  /* --color-secondary */
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  border-radius: 10px;
+  /* Ensure it sits above other content */
+  z-index: 50;
+  /* Add some shadow for depth */
+  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.5);
+}
+
+.magic-navigation ul {
+  display: flex;
+  width: 100%;
+  padding: 0;
+  margin: 0;
+}
+
+.magic-navigation ul li {
+  position: relative;
+  list-style: none;
+  width: 25%;
+  /* 100% / 4 items */
+  height: 70px;
+  z-index: 1;
+}
+
+.magic-navigation ul li a {
+  position: relative;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction: column;
+  width: 100%;
+  height: 100%;
+  text-align: center;
+  font-weight: 500;
+  text-decoration: none;
+}
+
+.magic-navigation ul li a .icon {
+  position: relative;
+  display: block;
+  line-height: 75px;
+  font-size: 1.5em;
+  text-align: center;
+  transition: 0.5s;
+  color: hsl(0 0% 100%);
+  /* --color-foreground */
+}
+
+.magic-navigation ul li.active a .icon {
+  transform: translateY(-32px);
+  color: hsl(0 0% 0%);
+  /* Contrast color for active icon inside the white indicator */
+}
+
+.magic-navigation ul li a .text {
+  position: absolute;
+  color: hsl(0 0% 100%);
+  /* --color-foreground */
+  font-weight: 400;
+  font-size: 0.75em;
+  letter-spacing: 0.05em;
+  transition: 0.5s;
+  opacity: 0;
+  transform: translateY(20px);
+}
+
+.magic-navigation ul li.active a .text {
+  opacity: 1;
+  transform: translateY(10px);
+}
+
+.indicator {
+  position: absolute;
+  top: -50%;
+  width: 70px;
+  /* Fixed size for the circle */
+  height: 70px;
+  background: hsl(0 0% 100%);
+  /* --color-primary (White indicator) */
+  border-radius: 50%;
+  border: 6px solid hsl(0 0% 0%);
+  /* --color-background (Black border to match page bg) */
+  transition: 0.5s;
+}
+
+/* 
+   The cutout effect relies on the shadow matching the border color (Page BG).
+*/
+.indicator::before {
+  content: "";
+  position: absolute;
+  top: 50%;
+  left: -22px;
+  width: 20px;
+  height: 20px;
+  background: transparent;
+  border-top-right-radius: 20px;
+  box-shadow: 1px -10px 0 0 hsl(0 0% 0%);
+  /* Match Page BG */
+}
+
+.indicator::after {
+  content: "";
+  position: absolute;
+  top: 50%;
+  right: -22px;
+  width: 20px;
+  height: 20px;
+  background: transparent;
+  border-top-left-radius: 20px;
+  box-shadow: -1px -10px 0 0 hsl(0 0% 0%);
+  /* Match Page BG */
+}
+
+.indicator-container {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 25%;
+  /* Matches item width */
+  height: 100%;
+  pointer-events: none;
+  transition: 0.5s;
+  display: flex;
+  justify-content: center;
+}
+
+.indicator-circle {
+  position: relative;
+  top: -50%;
+  width: 70px;
+  height: 70px;
+  background: hsl(0 0% 100%);
+  border-radius: 50%;
+  border: 6px solid hsl(0 0% 0%);
+  box-sizing: border-box;
+}
+
+.indicator-circle::before {
+  content: "";
+  position: absolute;
+  top: 50%;
+  left: -22px;
+  width: 20px;
+  height: 20px;
+  background: transparent;
+  border-top-right-radius: 20px;
+  box-shadow: 1px -10px 0 0 hsl(0 0% 0%);
+}
+
+.indicator-circle::after {
+  content: "";
+  position: absolute;
+  top: 50%;
+  right: -22px;
+  width: 20px;
+  height: 20px;
+  background: transparent;
+  border-top-left-radius: 20px;
+  box-shadow: -1px -10px 0 0 hsl(0 0% 0%);
+}
