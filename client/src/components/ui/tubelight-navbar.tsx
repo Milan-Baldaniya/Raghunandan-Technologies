@@ -26,10 +26,30 @@ export function NavBar({ items, className, logo }: NavBarProps) {
             setIsMobile(window.innerWidth < 768)
         }
 
+        const handleScroll = () => {
+            const scrollPosition = window.scrollY + 150; // Offset for better accuracy
+
+            items.forEach((item) => {
+                const element = document.querySelector(item.url);
+                if (element) {
+                    const { offsetTop, offsetHeight } = element as HTMLElement;
+                    if (scrollPosition >= offsetTop && scrollPosition < offsetTop + offsetHeight) {
+                        setActiveTab(item.name);
+                    }
+                }
+            });
+        };
+
         handleResize()
+        handleScroll()
         window.addEventListener("resize", handleResize)
-        return () => window.removeEventListener("resize", handleResize)
-    }, [])
+        window.addEventListener("scroll", handleScroll)
+
+        return () => {
+            window.removeEventListener("resize", handleResize)
+            window.removeEventListener("scroll", handleScroll)
+        }
+    }, [items])
 
     return (
         <div

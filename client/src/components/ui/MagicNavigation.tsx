@@ -15,22 +15,39 @@ interface MagicNavigationProps {
 export function MagicNavigation({ items }: MagicNavigationProps) {
     const [activeIndex, setActiveIndex] = useState(0);
 
-    // Update active index based on current URL hash
+    // Update active index based on scroll position
     useEffect(() => {
-        const handleHashChange = () => {
-            const hash = window.location.hash || '#expertise'; // Default to first item if no hash
-            const index = items.findIndex(item => item.url === hash);
-            if (index !== -1) {
-                setActiveIndex(index);
+        const handleScroll = () => {
+            // On mobile, we want to check which section is currently "in focus"
+            // A good heuristic is checking the center of the viewport or a bit higher
+            const checkPosition = window.scrollY + (window.innerHeight / 3);
+
+            // Find the current section
+            let currentindex = -1;
+
+            // We iterate through all items to find the one that contains the checkPosition
+            items.forEach((item, index) => {
+                const element = document.querySelector(item.url);
+                if (element) {
+                    const { offsetTop, offsetHeight } = element as HTMLElement;
+                    // Check if the checkPosition is within this section
+                    if (checkPosition >= offsetTop && checkPosition < offsetTop + offsetHeight) {
+                        currentindex = index;
+                    }
+                }
+            });
+
+            // If we found a matching section, update the index
+            if (currentindex !== -1) {
+                setActiveIndex(currentindex);
             }
         };
 
+        window.addEventListener('scroll', handleScroll);
         // Initial check
-        handleHashChange();
+        handleScroll();
 
-        // Listen for hash changes
-        window.addEventListener('hashchange', handleHashChange);
-        return () => window.removeEventListener('hashchange', handleHashChange);
+        return () => window.removeEventListener('scroll', handleScroll);
     }, [items]);
 
     const handleItemClick = (index: number, url: string) => {
@@ -42,8 +59,8 @@ export function MagicNavigation({ items }: MagicNavigationProps) {
         <div className="magic-navigation">
             <ul>
                 {items.map((item, index) => (
-                    <li 
-                        key={index} 
+                    <li
+                        key={index}
                         className={`list ${index === activeIndex ? 'active' : ''}`}
                         onClick={() => handleItemClick(index, item.url)}
                     >
@@ -55,8 +72,8 @@ export function MagicNavigation({ items }: MagicNavigationProps) {
                         </a>
                     </li>
                 ))}
-                <div 
-                    className="indicator-container" 
+                <div
+                    className="indicator-container"
                     style={{ transform: `translateX(${activeIndex * 100}%)` }}
                 >
                     <div className="indicator-circle"></div>
