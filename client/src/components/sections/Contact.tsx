@@ -1,6 +1,7 @@
 import { motion } from "framer-motion";
 import { useState } from "react";
-import { Shield, Lock } from "lucide-react";
+import { Shield, Lock, Code2, Smartphone, Palette, Layers, Server, Cloud, Briefcase, Database, Zap, TrendingUp, FileText, Blocks, Brain, Cpu, ShieldCheck, Headphones, Wrench, MoreHorizontal, Wallet, DollarSign, CreditCard, Banknote } from "lucide-react";
+import { ActivityDropdown } from "@/components/ui/activity-dropdown";
 
 const countries = [
   { code: "+91", name: "India", flag: "🇮🇳" },
@@ -33,6 +34,38 @@ const services = [
   "IT Consulting",
   "Maintenance & Support",
   "Other"
+];
+
+// Service dropdown items
+const serviceItems = [
+  { id: "web-dev", label: "Web Development", icon: <Code2 className="h-4 w-4" />, color: "#4ECDC4" },
+  { id: "mobile-app", label: "Mobile App Development (iOS/Android)", icon: <Smartphone className="h-4 w-4" />, color: "#45B7D1" },
+  { id: "ecommerce", label: "E-commerce Solutions", icon: <Briefcase className="h-4 w-4" />, color: "#F9C74F" },
+  { id: "ui-ux", label: "UI/UX Design", icon: <Palette className="h-4 w-4" />, color: "#FF6B6B" },
+  { id: "frontend", label: "Frontend Development (React, Vue, Angular)", icon: <Layers className="h-4 w-4" />, color: "#A06CD5" },
+  { id: "backend", label: "Backend Development (Node.js, Python, Java)", icon: <Server className="h-4 w-4" />, color: "#6BCF7F" },
+  { id: "fullstack", label: "Full Stack Development", icon: <Code2 className="h-4 w-4" />, color: "#FFB84D" },
+  { id: "cloud", label: "Cloud Services (AWS, Azure, GCP)", icon: <Cloud className="h-4 w-4" />, color: "#5DADE2" },
+  { id: "devops", label: "DevOps & CI/CD", icon: <Zap className="h-4 w-4" />, color: "#F39C12" },
+  { id: "database", label: "Database Design & Management", icon: <Database className="h-4 w-4" />, color: "#8E44AD" },
+  { id: "api", label: "API Development & Integration", icon: <Layers className="h-4 w-4" />, color: "#16A085" },
+  { id: "marketing", label: "Digital Marketing & SEO", icon: <TrendingUp className="h-4 w-4" />, color: "#E74C3C" },
+  { id: "cms", label: "Content Management Systems (WordPress, Drupal)", icon: <FileText className="h-4 w-4" />, color: "#3498DB" },
+  { id: "blockchain", label: "Blockchain Development", icon: <Blocks className="h-4 w-4" />, color: "#F1C40F" },
+  { id: "ai-ml", label: "AI/ML Solutions", icon: <Brain className="h-4 w-4" />, color: "#9B59B6" },
+  { id: "iot", label: "IoT Development", icon: <Cpu className="h-4 w-4" />, color: "#1ABC9C" },
+  { id: "cybersecurity", label: "Cybersecurity Services", icon: <ShieldCheck className="h-4 w-4" />, color: "#E67E22" },
+  { id: "consulting", label: "IT Consulting", icon: <Headphones className="h-4 w-4" />, color: "#34495E" },
+  { id: "maintenance", label: "Maintenance & Support", icon: <Wrench className="h-4 w-4" />, color: "#95A5A6" },
+  { id: "other", label: "Other", icon: <MoreHorizontal className="h-4 w-4" />, color: "#7F8C8D" },
+];
+
+// Budget dropdown items
+const budgetItems = [
+  { id: "below-15000", label: "Below ₹15,000", icon: <Wallet className="h-4 w-4" />, color: "#4ECDC4" },
+  { id: "15000-30000", label: "₹15,000 - ₹30,000", icon: <DollarSign className="h-4 w-4" />, color: "#45B7D1" },
+  { id: "30000-50000", label: "₹30,000 - ₹50,000", icon: <CreditCard className="h-4 w-4" />, color: "#F9C74F" },
+  { id: "above-50000", label: "Above ₹50,000", icon: <Banknote className="h-4 w-4" />, color: "#FF6B6B" },
 ];
 
 export default function Contact() {
@@ -258,20 +291,17 @@ export default function Contact() {
               <label htmlFor="service" className="block text-white font-semibold text-sm">
                 Interested In (Services/Technologies) *
               </label>
-              <select
-                id="service"
-                name="service"
+              <ActivityDropdown
+                items={serviceItems}
+                placeholder="Select a service"
                 value={formData.service}
-                onChange={handleChange}
-                className="w-full h-12 px-4 bg-black/50 border-2 border-white/20 text-white focus:border-cyan-400 focus:outline-none transition-colors rounded"
-              >
-                <option value="" className="bg-zinc-900">Select a service</option>
-                {services.map((service) => (
-                  <option key={service} value={service} className="bg-zinc-900">
-                    {service}
-                  </option>
-                ))}
-              </select>
+                onChange={(item) => {
+                  setFormData(prev => ({ ...prev, service: item.label }));
+                  if (errors.service) {
+                    setErrors(prev => ({ ...prev, service: "" }));
+                  }
+                }}
+              />
               {errors.service && <p className="text-red-400 text-xs">{errors.service}</p>}
             </div>
 
@@ -297,19 +327,17 @@ export default function Contact() {
               <label htmlFor="budget" className="block text-white font-semibold text-sm">
                 Project Budget (₹) *
               </label>
-              <select
-                id="budget"
-                name="budget"
+              <ActivityDropdown
+                items={budgetItems}
+                placeholder="Select budget range"
                 value={formData.budget}
-                onChange={handleChange}
-                className="w-full h-12 px-4 bg-black/50 border-2 border-white/20 text-white focus:border-cyan-400 focus:outline-none transition-colors rounded"
-              >
-                <option value="" className="bg-zinc-900">Select budget range</option>
-                <option value="below-15000" className="bg-zinc-900">Below ₹15,000</option>
-                <option value="15000-30000" className="bg-zinc-900">₹15,000 - ₹30,000</option>
-                <option value="30000-50000" className="bg-zinc-900">₹30,000 - ₹50,000</option>
-                <option value="above-50000" className="bg-zinc-900">Above ₹50,000</option>
-              </select>
+                onChange={(item) => {
+                  setFormData(prev => ({ ...prev, budget: item.id }));
+                  if (errors.budget) {
+                    setErrors(prev => ({ ...prev, budget: "" }));
+                  }
+                }}
+              />
               {errors.budget && <p className="text-red-400 text-xs">{errors.budget}</p>}
             </div>
 

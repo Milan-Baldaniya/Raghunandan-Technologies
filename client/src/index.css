@@ -45,8 +45,13 @@
     @apply border-border outline-ring/50;
   }
 
+  html {
+    overflow-x: hidden;
+  }
+
   body {
     @apply font-sans antialiased bg-background text-foreground selection:bg-white selection:text-black;
+    overflow-x: hidden;
   }
 
   h1,
@@ -85,10 +90,9 @@
   }
 
   /* Performance optimizations */
-  section {
+  /* section {
     content-visibility: auto;
-    contain: layout style paint;
-  }
+  } */
 
   /* Optimize transforms for animations */
   [class*="motion-"] {
