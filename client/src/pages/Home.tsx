@@ -30,43 +30,45 @@ export default function Home() {
   }, []);
 
   return (
-    <div className="min-h-screen bg-black text-white selection:bg-cyan-400 selection:text-black">
-      <Navbar />
-      <main>
-        <div className="flex flex-col overflow-hidden">
-          <ContainerScroll
-            titleComponent={
-              <>
-                <h1 className="text-2xl md:text-4xl font-semibold text-white dark:text-white">
-                  Welcome to <br />
-                  <span className="text-3xl md:text-[6rem] font-bold mt-1 leading-none text-cyan-400">
-                    Raghunandan Technologies
-                  </span>
-                </h1>
-              </>
-            }
-          >
-            <Hero />
-          </ContainerScroll>
-        </div>
-        {/* Separator line */}
-        <div className="w-full h-px bg-gradient-to-r from-transparent via-white/10 to-transparent"></div>
-        <AboutIntro />
-        <TechStack />
-        <Suspense fallback={<SectionLoader />}>
-          <Services />
-        </Suspense>
-        <Suspense fallback={<SectionLoader />}>
-          <Projects />
-        </Suspense>
-        <Suspense fallback={<SectionLoader />}>
-          <Process />
-        </Suspense>
-        <Suspense fallback={<SectionLoader />}>
-          <Contact />
-        </Suspense>
-      </main>
-      <Footer />
-    </div>
+    <ReactLenis root>
+      <div className="min-h-screen bg-black text-white selection:bg-cyan-400 selection:text-black">
+        <Navbar />
+        <main>
+          <div className="flex flex-col overflow-hidden">
+            <ContainerScroll
+              titleComponent={
+                <>
+                  <h1 className="text-2xl md:text-4xl font-semibold text-white dark:text-white">
+                    Welcome to <br />
+                    <span className="text-3xl md:text-[6rem] font-bold mt-1 leading-none text-cyan-400">
+                      Raghunandan Technologies
+                    </span>
+                  </h1>
+                </>
+              }
+            >
+              <Hero />
+            </ContainerScroll>
+          </div>
+          {/* Separator line */}
+          <div className="w-full h-px bg-gradient-to-r from-transparent via-white/10 to-transparent"></div>
+          <AboutIntro />
+          <TechStack />
+          <Suspense fallback={<SectionLoader />}>
+            <Services />
+          </Suspense>
+          <Suspense fallback={<SectionLoader />}>
+            <Projects />
+          </Suspense>
+          <Suspense fallback={<SectionLoader />}>
+            <Process />
+          </Suspense>
+          <Suspense fallback={<SectionLoader />}>
+            <Contact />
+          </Suspense>
+        </main>
+        <Footer />
+      </div>
+    </ReactLenis>
   );
 }
